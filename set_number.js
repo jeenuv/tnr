@@ -1,6 +1,7 @@
 
 var TNR = {};
 
+
 // Wrapper function for logging
 TNR.log = function(message) {
   if (1 && message)
@@ -8,21 +9,23 @@ TNR.log = function(message) {
 };
 
 
+TNR.timeout = function(id, func, timeout) {
+  var key = "timeout-" + id;
+  if (TNR[key])
+    clearTimeout(TNR[key]);
+  TNR[key] = setTimeout(func, timeout);
+}
+
 // Prefix the page title with tab's index
 TNR.setTitle = function() {
   var titleRegex = /^\[\d+\] /
   var title = document.title;
 
-  if (title == "" || title == "New Tab") {
-    TNR.log("setting timeout");
-    setTimeout(500, TNR.setTitle, this);
-    return;
-  }
-
-  if (this.titleSet)
+  if (TNR.titleSet)
     title = title.replace(titleRegex, "");
-  document.title = "[" + this.idx + "] " + title;
-  this.titleSet = true;
+  document.title = "[" + TNR.idx + "] " + title;
+  TNR.titleSet = true;
+  TNR.timeout("settitle", TNR.setTitle, 15000);
 };
 
 
@@ -31,7 +34,7 @@ TNR.handleRequest = function(message, sender, sendResponse) {
   switch (message.header) {
     case "set":
       TNR.idx = message.idx;
-      TNR.setTitle.call(TNR); // Set 'this' to TNR
+      TNR.setTitle();
       break;
 
     default:
