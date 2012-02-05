@@ -1,0 +1,16 @@
+{
+  "name": "Tab Numberer",
+  "version": "0.1",
+  "description": "Modify page titles to include tab numbers",
+  "background_page": "background.html",
+
+  "content_scripts": [
+    {
+      "matches": [ "<all_urls>" ],
+      "js": [ "set_number.js" ],
+      "run_at": "document_end"
+    }
+  ],
+
+  "permission": [ "tabs" ]
+}
