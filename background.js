@@ -3,12 +3,19 @@ function log(message) {
   console.log(message);
 }
 
+function updateTab(t) {
+  if (t)
+    chrome.tabs.sendRequest(t.id,
+        { "header": "set", "idx": parseInt(t.index) + 1 });
+  else
+    log("Empty tag");
+}
+
 function updateWindow(w) {
   chrome.tabs.query({ "windowId": w }, function (tabs) {
         log("Updating " + tabs.length + " tabs");
         for (var i in tabs)
-          chrome.tabs.sendRequest(tabs[i].id,
-            { "header": "set", "idx": parseInt(tabs[i].index) + 1 });
+          updateTab(tabs[i]);
       });
 }
 
@@ -58,11 +65,10 @@ chrome.tabs.onMoved.addListener(function(tabId, moveInfo) {
 // Update window when a tab is closed
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
     log("onRemoved");
-      // Only update if the window survives
-      if (!removeInfo.isWindowClosing)
-        chrome.tabs.get(tabId, function(tab) {
-          updateWindow(tab.windowId);
-      });
+    chrome.tabs.query({}, function (tabs) {
+          for (var i in tabs)
+            updateTab(tabs[i]);
+        });
     });
 
 
