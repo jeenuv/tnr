@@ -8,9 +8,9 @@
     {
       "matches": [ "<all_urls>" ],
       "js": [ "set_number.js" ],
-      "run_at": "document_end"
+      "run_at": "document_idle"
     }
   ],
 
-  "permission": [ "tabs" ]
+  "permissions": [ "tabs" ]
 }
